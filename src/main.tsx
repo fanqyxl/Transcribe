@@ -13,7 +13,7 @@ const App: Component<{}, { renderRoot: HTMLElement }> = function() {
 
 	return (
 		<div id="app">
-			<StyleFromParams scheme="tonal_spot" contrast={0} color="cba6f7" />
+			<StyleFromParams scheme="vibrant" contrast={0} color="cba6f7" />
 			<Home />
 		</div>
 	);

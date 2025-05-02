@@ -2,19 +2,21 @@ import { IYouTubeMusicAuthenticated } from "../yt/interfaces-primary";
 import { AMManager } from "../../dsp/applemusic/manager";
 import { IPlaylistDetail } from "../yt/interfaces-supplementary";
 import { AMLibraryPlaylist, AMLibraryPlaylistCreationResponse } from "../applemusic/types";
+import { TransferManager } from "./TransferManager";
 
-export class YT2AM {
+export class YT2AM extends TransferManager {
   yt: IYouTubeMusicAuthenticated;
   am: AMManager;
 
   constructor(yt: IYouTubeMusicAuthenticated, am: AMManager) {
+    super();
     this.yt = yt;
     this.am = am;
   }
 
-  async transfer(yt: IPlaylistDetail, progressCallback?: (found: number, total: number) => void): Promise<AMLibraryPlaylistCreationResponse> {
+  async transfer(from: IPlaylistDetail, progressCallback?: (found: number, total: number) => void): Promise<AMLibraryPlaylistCreationResponse> {
     var playlist = await this.yt.getPlaylist(
-      yt.id!
+      from.id!
     );
     if (!playlist.tracks || playlist.tracks.length === 0) {
       throw new Error("No tracks to transfer");

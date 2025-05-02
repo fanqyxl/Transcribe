@@ -69,7 +69,7 @@ const Home: Component<
         display: flex;
         flex-direction: row;
         gap: 0.8rem;
-
+        flex-wrap: wrap;
       }
 
       .service-wrap {

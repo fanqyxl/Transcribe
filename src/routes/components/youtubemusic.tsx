@@ -51,7 +51,7 @@ export const YTPlaylistCard: Component<
   this.open = false;
   return (
     <div class="playlist-card" on:click={() => (this.open = true)}>
-      <Card type="elevated">
+      <Card type="filled">
         <h2>{this.playlist.name}</h2>
         <p>{this.playlist.count} tracks</p>
       </Card>

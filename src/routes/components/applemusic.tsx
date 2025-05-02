@@ -65,7 +65,7 @@ export const AMPlaylistCard: Component<
     `
     return (
         <div class="playlist-card" on:click={() => (this.open = true)}>
-            <Card type="elevated">
+            <Card type="filled">
                 <img src={this.url} alt="Playlist cover" />
                 <h2>{this.playlist.attributes.name}</h2>
                 <p>

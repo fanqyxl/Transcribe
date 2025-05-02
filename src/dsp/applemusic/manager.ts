@@ -3,17 +3,23 @@ import {
     AMPlaylistsResponse,
     AMLibraryPlaylist,
     AMSearchResponse,
+    AMTrackReferenceForPlaylistAddition,
+    AMLibraryPlaylistCreationResponse,
+    AMLibraryPlaylistCreationAttributes,
+    AMLibraryPlaylistCreationRequest,
 } from "./types";
-import { fetch } from "../epoxy";
+import { fetch } from "../../epoxy";
 
 export class AMManager {
     constructor(token: string, cookie: string) {
-        this.token = token;
+        this.token = token.startsWith("Bearer ") ? token.substring(7) : token;
         this.cookie = cookie;
     }
 
     token: string;
     cookie: string;
+
+    baseUrl: string = "https://amp-api.music.apple.com/v1/me/library/playlists";
 
     async getPlaylists(limit: number): Promise<AMLibraryPlaylist[]> {
         let url = `https://amp-api.music.apple.com/v1/me/library/playlists?limit=${limit}&platform=web`;
@@ -69,7 +75,7 @@ export class AMManager {
         return (await response.json()) as AMPlaylistResponse;
     }
 
-    async searchSongs(query: string): Promise<AMSearchResponse> {
+    async searchSongs(query: string, limit: number): Promise<AMSearchResponse> {
         let baseUrl =
             "https://amp-api-edge.music.apple.com/v1/catalog/ca/search";
         let params = {
@@ -83,7 +89,7 @@ export class AMManager {
             "include[albums]": "artists",
             "include[songs]": "artists",
             l: "en-CA",
-            limit: "5",
+            limit: limit,
             "omit[resource]": "autos",
             platform: "web",
             "relate[albums]": "artists",
@@ -110,5 +116,49 @@ export class AMManager {
             },
         });
         return (await response.json()) as AMSearchResponse;
+    }
+
+    async createPlaylist(
+        name: string,
+        description?: string,
+        songIds?: string[],
+    ) {
+        let refs: AMTrackReferenceForPlaylistAddition[] = (songIds || []).map(
+            (id) =>
+                ({
+                    id,
+                    type: "songs",
+                }) as AMTrackReferenceForPlaylistAddition,
+        );
+
+        let attrs = {
+            name: name,
+            description: description || "",
+            isPublic: false,
+        } as AMLibraryPlaylistCreationAttributes
+
+      let request = {
+        attributes: attrs,
+        relationships: {
+          tracks: {
+            data: refs,
+          },
+        },
+      } as AMLibraryPlaylistCreationRequest;
+
+        let response = await fetch(
+            "https://amp-api.music.apple.com/v1/me/library/playlists",
+            {
+                method: "POST",
+                headers: {
+                    Authorization: `Bearer ${this.token}`,
+                    Cookie: this.cookie,
+                    origin: "https://beta.music.apple.com",
+                },
+                body: JSON.stringify(request),
+            },
+        );
+
+        return (await response.json()) as AMLibraryPlaylistCreationResponse;
     }
 }

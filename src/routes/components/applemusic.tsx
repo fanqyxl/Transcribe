@@ -1,6 +1,6 @@
 import { Dialog, Button, Card } from "m3-dreamland";
-import { AMManager } from "../../applemusic/manager";
-import { AMLibraryPlaylist, AMPlaylistResponse } from "../../applemusic/types";
+import { AMManager } from "../../dsp/applemusic/manager";
+import { AMLibraryPlaylist, AMPlaylistResponse } from "../../dsp/applemusic/types";
 
 export const AMPlaylistDialog: Component<
     { playlist: AMLibraryPlaylist; open: boolean; am: AMManager },
@@ -26,11 +26,11 @@ export const AMPlaylistDialog: Component<
                         <ul>
                             {use(this.playlistInternal, (p) =>
                                 Object.keys(
-                                    p?.resources["library-songs"] || [],
+                                    p?.resources?.["library-songs"] || [],
                                 ).map((key) => (
                                     <li>
                                         {
-                                            p?.resources["library-songs"]![key]
+                                            p?.resources?.["library-songs"]![key]
                                                 .attributes.name
                                         }
                                     </li>

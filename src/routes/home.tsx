@@ -8,13 +8,16 @@ import settings from "../store";
 import YouTubeMusic, {
     IPlaylistDetail,
     IYouTubeMusicAuthenticated,
-} from "../yt/exports";
+} from "../dsp/yt/exports";
 import { fetch } from "../epoxy";
-import { AMPlaylistsResponse, AMLibraryPlaylist } from "../applemusic/types";
+import {
+    AMPlaylistsResponse,
+    AMLibraryPlaylist,
+} from "../dsp/applemusic/types";
 
 import SettingsDialog from "./components/settings";
-import YouTubeMusicAuthenticated from "../yt/service/youtube-music-authenticated";
-import { AMManager } from "../applemusic/manager";
+import YouTubeMusicAuthenticated from "../dsp/yt/service/youtube-music-authenticated";
+import { AMManager } from "../dsp/applemusic/manager";
 import { AMPlaylistCard } from "./components/applemusic";
 import { YTPlaylistCard } from "./components/youtubemusic";
 
@@ -84,31 +87,46 @@ const Home: Component<
 
     return (
         <div>
+            <div style={{ textAlign: "center" }}>
+                <h1>Transcribe</h1>
+                <p>Interop or die!</p>
+            </div>
             <Card type="filled">
                 <div class="controls">
-                  <Button
-                      type="filled"
-                      on:click={async () => {
-                          this.am = new AMManager(
-                              settings.amToken,
-                              settings.amCookie,
-                          );
-                          this.amFlag = true;
-                          this.amPlaylists = await this.am.getPlaylists(
-                              this.amLoadedPlaylistCount,
-                          );
-                          console.log(this.amPlaylists);
-                          console.log(
-                              await this.am.searchSongs(
-                                  "never gonna give you up",
-                              ),
-                          );
-                      }}
-                  >
-                      Get AM Playlists
-                  </Button>
                     <Button
                         type="filled"
+                        on:click={async () => {
+                            this.amFlag = true;
+                            this.am = new AMManager(
+                                settings.amToken,
+                                settings.amCookie,
+                            );
+                            this.ytFlag = true;
+                            this.ytAuthed = await this.ytm.authenticate(
+                                settings.ytCookie,
+                            );
+                            Promise.all([
+                                this.am.getPlaylists(
+                                    this.amLoadedPlaylistCount,
+                                ),
+                                this.ytAuthed.getLibraryPlaylists(),
+                            ])
+                                .then(([applePlaylists, youtubePlaylists]) => {
+                                    this.amPlaylists = applePlaylists;
+                                    this.ytPlaylists = youtubePlaylists;
+                                })
+                                .catch((error) => {
+                                    console.error(
+                                        "Error fetching playlists:",
+                                        error,
+                                    );
+                                });
+                        }}
+                    >
+                        Get Playlists
+                    </Button>
+                    <Button
+                        type="tonal"
                         on:click={async () => {
                             this.ytFlag = true;
                             this.ytAuthed = await this.ytm.authenticate(
@@ -118,9 +136,79 @@ const Home: Component<
                                 await this.ytAuthed.getLibraryPlaylists();
                         }}
                     >
-                        Get YT Playlists
+                        Get YT Only
                     </Button>
-
+                    <Button
+                        type="tonal"
+                        on:click={async () => {
+                            this.ytAuthed = await this.ytm.authenticate(
+                                settings.ytCookie,
+                            );
+                            alert("YouTube Music authenticated! :3");
+                        }}
+                    >
+                        Auth YT
+                    </Button>
+                    <Button
+                        type="tonal"
+                        on:click={async () => {
+                            this.am = new AMManager(
+                                settings.amToken,
+                                settings.amCookie,
+                            );
+                            this.amFlag = true;
+                            this.amPlaylists = await this.am.getPlaylists(
+                                this.amLoadedPlaylistCount,
+                            );
+                            console.log(this.amPlaylists);
+                        }}
+                    >
+                        Get AM Only
+                    </Button>
+                    <Button
+                        type="tonal"
+                        on:click={async () => {
+                            this.am = new AMManager(
+                                settings.amToken,
+                                settings.amCookie,
+                            );
+                            alert("Apple Music authenticated! :3");
+                        }}
+                    >
+                        Auth AM
+                    </Button>
+                    <Button
+                        type="tonal"
+                        on:click={async () => {
+                            console.log(
+                                await this.am.createPlaylist(
+                                    "Test Playlist from Transcribe",
+                                    "",
+                                    ["i.oOdNpNDIEvgNL38"],
+                                ),
+                            );
+                            alert("Apple Music playlist created! :3");
+                        }}
+                    >
+                        Test create AM Playlist
+                    </Button>
+                    <Button
+                        type="tonal"
+                        on:click={async () => {
+                            let res = await this.am.searchSongs(
+                                "never gonna give you up",
+                                10,
+                            );
+                            console.log(res);
+                            alert(
+                                (
+                                    res.results.song?.data.length || 0
+                                ).toString() + " songs returned for test query",
+                            );
+                        }}
+                    >
+                        Test search AM
+                    </Button>
                     <Button
                         type="filled"
                         on:click={async () => {
@@ -134,6 +222,29 @@ const Home: Component<
 
             <SettingsDialog open bind:open={use(this.settingsOpen)} />
             <div class="service-wrap">
+                {$if(
+                    use(this.ytFlag),
+                    <Card type="elevated">
+                        <h2>YouTube Playlists</h2>
+                        {$if(
+                            use(
+                                this.ytPlaylists,
+                                (playlists) => playlists.length > 0,
+                            ),
+                            <div class="playlists">
+                                {use(this.ytPlaylists, (playlists) =>
+                                    playlists.map((playlist) => (
+                                        <YTPlaylistCard
+                                            playlist={playlist}
+                                            auth={this.ytAuthed}
+                                        />
+                                    )),
+                                )}
+                            </div>,
+                            <CircularProgressIndeterminate />,
+                        )}
+                    </Card>,
+                )}
                 {$if(
                     use(this.amFlag),
                     <Card type="elevated">
@@ -169,29 +280,6 @@ const Home: Component<
                                 >
                                     Load more
                                 </Button>
-                            </div>,
-                            <CircularProgressIndeterminate />,
-                        )}
-                    </Card>,
-                )}
-                {$if(
-                    use(this.ytFlag),
-                    <Card type="elevated">
-                        <h2>YouTube Playlists</h2>
-                        {$if(
-                            use(
-                                this.ytPlaylists,
-                                (playlists) => playlists.length > 0,
-                            ),
-                            <div class="playlists">
-                                {use(this.ytPlaylists, (playlists) =>
-                                    playlists.map((playlist) => (
-                                        <YTPlaylistCard
-                                            playlist={playlist}
-                                            auth={this.ytAuthed}
-                                        />
-                                    )),
-                                )}
                             </div>,
                             <CircularProgressIndeterminate />,
                         )}

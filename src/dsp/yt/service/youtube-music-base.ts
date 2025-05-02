@@ -3,7 +3,7 @@ import ArtistParser from "../parsers/artist-parser";
 import PlaylistParser from "../parsers/playlist-parser";
 import TrackParser from "../parsers/track-parser";
 import YouTubeMusicContext from "../context";
-import { fetch } from "../../epoxy";
+import { fetch } from "../../../epoxy";
 
 export default class YouTubeMusicBase {
     hostname: string = "music.youtube.com";

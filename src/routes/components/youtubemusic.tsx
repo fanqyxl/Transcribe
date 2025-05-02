@@ -1,6 +1,6 @@
 import { Dialog, Button, Card } from "m3-dreamland";
-import { IYouTubeMusicAuthenticated } from "../../yt/interfaces-primary";
-import { IPlaylistDetail } from "../../yt/interfaces-supplementary";
+import { IYouTubeMusicAuthenticated } from "../../dsp/yt/interfaces-primary";
+import { IPlaylistDetail } from "../../dsp/yt/interfaces-supplementary";
 
 export const YTPlaylistDialog: Component<
   {

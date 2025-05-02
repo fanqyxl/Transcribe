@@ -1,3 +1,5 @@
+// --- START OF FILE types.ts ---
+
 // --- START OF EXISTING types.ts ---
 
 // Response structure (List of Library Playlists)
@@ -141,24 +143,36 @@ export interface AMLibrarySongReference extends AMResourceReference {
   type: 'library-songs';
 }
 
+export interface AMCatalogSongReference extends AMResourceReference {
+  type: 'songs';
+}
+
+// Reference type used when adding tracks to a playlist
+export interface AMTrackReferenceForPlaylistAddition {
+  id: string;
+  // Usually 'songs' (catalog), 'library-songs', or 'music-videos'
+  type: 'songs' | 'library-songs' | 'music-videos';
+}
+
 export interface AMCatalogPlaylistReference extends AMResourceReference {
   type: 'playlists';
 }
 
 export interface AMLibraryPlaylistRelationships {
-  tracks: AMRelationship<AMLibrarySongReference>;
+  tracks: AMRelationship<AMLibrarySongReference | AMCatalogSongReference | AMMusicVideoReference>; // Can contain library/catalog songs or videos
   catalog?: AMRelationship<AMCatalogPlaylistReference>; // Optional catalog link
 }
 
 /**
  * Represents a library playlist object.
+ * Relationships are optional as they might not be included in all responses (e.g., creation).
  */
 export interface AMLibraryPlaylist {
   id: string;
   type: 'library-playlists';
   href: string;
   attributes: AMLibraryPlaylistAttributes;
-  relationships: AMLibraryPlaylistRelationships;
+  relationships?: AMLibraryPlaylistRelationships;
 }
 
 export interface AMCatalogPlaylistAttributes {
@@ -209,10 +223,6 @@ export interface AMLibrarySongAttributes {
   artistName: string;
   artwork: AMArtwork;
   playParams: AMPlayParams; // Includes catalogId, reporting info
-}
-
-export interface AMCatalogSongReference extends AMResourceReference {
-  type: 'songs';
 }
 
 export interface AMLibrarySongRelationships {
@@ -602,6 +612,45 @@ export interface AMSearchResponse {
     results: AMSearchResults;
     resources?: AMResourcesContainer; // Included full resources (optional based on request/results)
     meta?: AMSearchMeta; // Optional meta information
+}
+
+// --- Playlist Creation Types (NEW) ---
+
+/**
+ * Represents the attributes payload when creating a new library playlist.
+ */
+export interface AMLibraryPlaylistCreationAttributes {
+    name: string;
+    description?: string; // Optional description
+    isPublic?: boolean; // Optional, defaults likely handled by API
+}
+
+/**
+ * Represents the relationships payload when creating a new library playlist,
+ * specifically for adding initial tracks.
+ */
+export interface AMLibraryPlaylistCreationRelationships {
+    tracks: {
+        data: AMTrackReferenceForPlaylistAddition[];
+    };
+    // Potentially other relationships could be added at creation, but 'tracks' is typical.
+}
+
+/**
+ * Represents the request body for creating a new library playlist.
+ */
+export interface AMLibraryPlaylistCreationRequest {
+    attributes: AMLibraryPlaylistCreationAttributes;
+    relationships: AMLibraryPlaylistCreationRelationships;
+}
+
+/**
+ * Represents the response structure after successfully creating a library playlist.
+ * It typically returns the newly created playlist resource, potentially without
+ * relationships populated initially.
+ */
+export interface AMLibraryPlaylistCreationResponse {
+    data: AMLibraryPlaylist[]; // Array containing the single created playlist
 }
 
 

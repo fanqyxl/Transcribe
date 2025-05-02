@@ -1,6 +1,8 @@
 import { Dialog, Button, Card } from "m3-dreamland";
 import { IYouTubeMusicAuthenticated } from "../../dsp/yt/interfaces-primary";
 import { IPlaylistDetail } from "../../dsp/yt/interfaces-supplementary";
+import { YT2AM } from "../../dsp/bridge/YT2AM";
+import { AMManager } from "../../dsp/applemusic/manager";
 
 export const YTPlaylistDialog: Component<
   {
@@ -46,14 +48,20 @@ export const YTPlaylistDialog: Component<
 };
 
 export const YTPlaylistCard: Component<
-  { playlist: IPlaylistDetail; auth: IYouTubeMusicAuthenticated; }, { open: boolean; }
+  { playlist: IPlaylistDetail; auth: IYouTubeMusicAuthenticated; am: AMManager }, { open: boolean; }
 > = function () {
   this.open = false;
   return (
-    <div class="playlist-card" on:click={() => (this.open = true)}>
+    <div class="playlist-card">
       <Card type="filled">
         <h2>{this.playlist.name}</h2>
         <p>{this.playlist.count} tracks</p>
+        <Button type="filled" on:click={() => {
+          const transfer = new YT2AM(this.auth, this.am);
+          transfer.transfer(this.playlist);
+        }}>
+          Transfer
+        </Button>
       </Card>
       <YTPlaylistDialog
         open

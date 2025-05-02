@@ -237,6 +237,9 @@ const Home: Component<
                                         <YTPlaylistCard
                                             playlist={playlist}
                                             auth={this.ytAuthed}
+                                            am={this.am}
+                                            bind:auth={use(this.ytAuthed)}
+                                            bind:am={use(this.am)}
                                         />
                                     )),
                                 )}

@@ -8,10 +8,18 @@ A work-in-progress web application to transfer playlists between music streaming
 - YouTube Music
 
 ## What works
-- Enumerating playlists
+- Enumerating playlists:
+  - Apple Music
+  - YouTube Music
+- Transferring:
+  - Apple Music to YouTube Music
 
 ## TODO
-- Transferring playlists
+(in order of priority)
+
+- YouTube Music to Apple Music
+- SPOTIFY SUPPORT!!!
+- Soundcloud support
 
 ## Credits
 - YouTube Music support is based on [youtube-music-ts-api](https://github.com/nickp10/youtube-music-ts-api).

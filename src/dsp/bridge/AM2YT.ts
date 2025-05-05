@@ -14,6 +14,11 @@ export class AM2YT extends TransferManager {
   }
 
   async transfer(from: AMLibraryPlaylist, progressCallback: (found: number, total: number) => void) {
+    const playlist = await this.am.getPlaylist(from.id);
+    const tracks = playlist.resources?.["library-songs"]||[];
+    if (tracks.length === 0) {
+      throw new Error("No tracks to transfer");
+    }
 
   }
 }

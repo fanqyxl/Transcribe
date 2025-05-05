@@ -19,10 +19,10 @@ export class AMManager {
     token: string;
     cookie: string;
 
-    baseUrl: string = "https://amp-api.music.apple.com/v1/me/library/playlists";
+    apiBase: string = "https://amp-api.music.apple.com";
 
     async getPlaylists(limit: number): Promise<AMLibraryPlaylist[]> {
-        let url = `https://amp-api.music.apple.com/v1/me/library/playlists?limit=${limit}&platform=web`;
+        let url = `${this.apiBase}/v1/me/library/playlists?limit=${limit}&platform=web`;
         console.log(url);
         let response = await fetch(url, {
             headers: {
@@ -37,7 +37,7 @@ export class AMManager {
     }
 
     async getPlaylist(id: string): Promise<AMPlaylistResponse> {
-        let baseUrl = `https://amp-api.music.apple.com/v1/me/library/playlists/${id}`;
+        let baseUrl = `${this.apiBase}/v1/me/library/playlists/${id}`;
         let params = {
             "art[library-music-videos:url]": "c,f",
             "art[url]": "f",
@@ -77,7 +77,7 @@ export class AMManager {
 
     async searchSongs(query: string, limit: number): Promise<AMSearchResponse> {
         let baseUrl =
-            "https://amp-api-edge.music.apple.com/v1/catalog/ca/search";
+            `${this.apiBase}/v1/catalog/ca/search`;
         let params = {
             "art[music-videos:url]": "c",
             "art[url]": "f",
@@ -147,7 +147,7 @@ export class AMManager {
       } as AMLibraryPlaylistCreationRequest;
 
         let response = await fetch(
-            "https://amp-api.music.apple.com/v1/me/library/playlists",
+            `${this.apiBase}/v1/me/library/playlists`,
             {
                 method: "POST",
                 headers: {

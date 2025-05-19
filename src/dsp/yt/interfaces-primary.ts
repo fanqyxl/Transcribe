@@ -45,7 +45,7 @@ export interface IYouTubeMusicAuthenticated extends IYouTubeMusicGuest {
      * @param sourcePlaylistId An optional playlist ID to copy the initial set of tracks from.
      * @returns A promise that will yield the playlist with its ID.
      */
-    createPlaylist(name: string, description?: string, privacy?: string, sourcePlaylistId?: string): Promise<IPlaylistSummary>;
+    createPlaylist(name: string, description?: string, privacy?: string, sourcePlaylistId?: string, videoIds?: string[]): Promise<IPlaylistSummary>;
 
     /**
      * Deletes a playlist from the user's library.

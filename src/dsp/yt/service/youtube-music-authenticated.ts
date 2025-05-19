@@ -115,22 +115,26 @@ export default class YouTubeMusicAuthenticated extends YouTubeMusicGuest impleme
         }
     }
 
-    async createPlaylist(name: string, description?: string, privacy?: string, sourcePlaylistId?: string): Promise<IPlaylistSummary> {
-        const response = await this.sendRequest("playlist/create", {
+    async createPlaylist(name: string, description?: string, privacy?: string, sourcePlaylistId?: string, videoIds?: string[]): Promise<IPlaylistSummary> {
+        const data: any = {
             title: name,
             description: description,
-            privacyStatus: privacy || 'PRIVATE',
-            // @ts-expect-error
-            sourcePlaylistId: this.playlistIdTrim(sourcePlaylistId)
-        });
+            privacyStatus: privacy || 'PRIVATE'
+        };
+        if (sourcePlaylistId) {
+            data.sourcePlaylistId = this.playlistIdTrim(sourcePlaylistId);
+        }
+        if (videoIds && videoIds.length > 0) {
+            data.videoIds = videoIds;
+        }
+        const response = await this.sendRequest("playlist/create", data);
         if (!response || !response.playlistId) {
-            // @ts-expect-error
-            return undefined;
+            throw new Error("Could not create playlist");
         }
         return {
             id: response.playlistId,
             name: name,
-            count: 0
+            count: Array.isArray(videoIds) ? videoIds.length : 0
         };
     }
 

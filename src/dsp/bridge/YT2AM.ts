@@ -21,26 +21,13 @@ export class YT2AM extends TransferManager {
     if (!playlist.tracks || playlist.tracks.length === 0) {
       throw new Error("No tracks to transfer");
     }
-    const ids: string[] = [];
+    let ids: string[] = [];
     for (let i = 0; i < playlist.tracks.length; i++) {
       const track = playlist.tracks[i];
 
       const album = track.album?.name;
       const artist = track.artists?.map(artist => artist.name).join(", ");
-      let query = track.title;
-      if (!query) {
-        throw new Error(`No title or id for track ${track.id}`);
-      }
-      if (album) {
-        query += ` from ${album}`;
-      }
-      if (artist) {
-        query += ` by ${artist}`;
-      }
-      if (album && artist) {
-        query += ` from ${album} by ${artist}`;
-      }
-
+      const query = this.constructQuery(track.title!, album, artist);
       console.log(`(${i + 1}/${playlist.tracks.length}) Adding "${query}"`);
       const result = await this.am.searchSongs(query, 5);
       console.log(result);

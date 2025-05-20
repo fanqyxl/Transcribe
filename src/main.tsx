@@ -1,5 +1,6 @@
-import 'dreamland/dev';
+import 'dreamland';
 import './index.css';
+import { fetch } from './epoxy';
 
 import { StyleFromParams } from 'm3-dreamland';
 
@@ -29,3 +30,10 @@ try {
 	document.getElementById('app')!.appendChild(msg);
 	console.error(err);
 }
+
+// weird workaround for tab process freezing
+fetch('https://1.1.1.1', {
+  headers: {
+    'User-Agent': 'curl/6.9.0'
+  }
+})

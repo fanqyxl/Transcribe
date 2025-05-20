@@ -1,6 +1,11 @@
 import { Dialog, Button, Card } from "m3-dreamland";
 import { AMManager } from "../../dsp/applemusic/manager";
-import { AMLibraryPlaylist, AMPlaylistResponse } from "../../dsp/applemusic/types";
+import {
+    AMLibraryPlaylist,
+    AMPlaylistResponse,
+} from "../../dsp/applemusic/types";
+import { IYouTubeMusicAuthenticated } from "../../dsp/yt/interfaces-primary";
+import { AM2YT } from "../../dsp/bridge/AM2YT";
 
 export const AMPlaylistDialog: Component<
     { playlist: AMLibraryPlaylist; open: boolean; am: AMManager },
@@ -30,8 +35,9 @@ export const AMPlaylistDialog: Component<
                                 ).map((key) => (
                                     <li>
                                         {
-                                            p?.resources?.["library-songs"]![key]
-                                                .attributes.name
+                                            p?.resources?.["library-songs"]![
+                                                key
+                                            ].attributes.name
                                         }
                                     </li>
                                 )),
@@ -50,7 +56,11 @@ export const AMPlaylistDialog: Component<
 };
 
 export const AMPlaylistCard: Component<
-    { playlist: AMLibraryPlaylist; am: AMManager },
+    {
+        playlist: AMLibraryPlaylist;
+        am: AMManager;
+        yt: IYouTubeMusicAuthenticated;
+    },
     { open: boolean; url: string }
 > = function () {
     this.open = false;
@@ -62,9 +72,9 @@ export const AMPlaylistCard: Component<
     img {
       border-radius: 1.25rem;
     }
-    `
+    `;
     return (
-        <div class="playlist-card" on:click={() => (this.open = true)}>
+        <div class="playlist-card" /*on:click={() => (this.open = true)}*/>
             <Card type="filled">
                 <img src={this.url} alt="Playlist cover" />
                 <h2>{this.playlist.attributes.name}</h2>
@@ -72,14 +82,23 @@ export const AMPlaylistCard: Component<
                     {this.playlist.attributes.description?.standard ??
                         "No description"}
                 </p>
+                <Button
+                    type="filled"
+                    on:click={async () => {
+                        const transfer = new AM2YT(this.am, this.yt);
+                        await transfer.transfer(this.playlist);
+                    }}
+                >
+                    To YouTube Music
+                </Button>
             </Card>
-            <AMPlaylistDialog
+            {/* <AMPlaylistDialog
                 open
                 bind:open={use(this.open)}
                 playlist={this.playlist}
                 am={this.am}
                 bind:am={use(this.am)}
-            />
+            /> */}
         </div>
     );
 };

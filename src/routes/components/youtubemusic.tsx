@@ -60,14 +60,14 @@ export const YTPlaylistCard: Component<
           const transfer = new YT2AM(this.auth, this.am);
           transfer.transfer(this.playlist);
         }}>
-          Transfer
+          To Apple Music
         </Button>
       </Card>
-      <YTPlaylistDialog
+      {/* <YTPlaylistDialog
         open
         bind:open={use(this.open)}
         playlist={this.playlist}
-        auth={this.auth} />
+        auth={this.auth} /> */}
     </div>
   );
 };

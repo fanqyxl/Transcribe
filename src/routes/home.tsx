@@ -125,6 +125,22 @@ const Home: Component<
                     >
                         Get Playlists
                     </Button>
+                    <Button type="tonal" on:click={async () => {
+                      const query = "Stress from Cross by Justice"
+                      const url = `https://www.youtube.com/results?hl=en&persist_app=1&search_query=${encodeURIComponent(query)}&sp=EgIQAQ%253D%253D`;
+                      console.log(url);
+                      let res = await fetch(url);
+                      let body = await res.text();
+
+                      let split = body.split("var ytInitialData = ")[1];
+                      let furtherSplit: any = split.split("};</script>")[0];
+                      furtherSplit = furtherSplit + "}";
+                      furtherSplit = JSON.parse(furtherSplit);
+
+                      let firstResult = furtherSplit.contents.twoColumnSearchResultsRenderer.primaryContents.sectionListRenderer.contents[0].itemSectionRenderer.contents[0].videoRenderer.videoId;
+
+                      console.log(firstResult);
+                    }}>Test YT Search</Button>
                     <Button
                         type="tonal"
                         on:click={async () => {
@@ -266,6 +282,8 @@ const Home: Component<
                                                     playlist={playlist}
                                                     am={this.am}
                                                     bind:am={use(this.am)}
+                                                    yt={this.ytAuthed}
+                                                    bind:yt={use(this.ytAuthed)}
                                                 />
                                             </div>
                                         )),

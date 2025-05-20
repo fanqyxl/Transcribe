@@ -13,6 +13,7 @@
     "@vitejs/plugin-legacy": "^6.1.1",
     "dreamland": "^0.0.24",
     "dreamland-router": "github:MercuryWorkshop/dreamland-router",
+    "lightningcss": "^1.30.1",
     "m3-dreamland": "github:MercuryWorkshop/m3-dreamland",
     "rollup-plugin-typescript2": "^0.36.0",
     "sha1": "^1.1.1",

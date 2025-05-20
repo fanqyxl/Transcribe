@@ -21,6 +21,6 @@ A work-in-progress web application to transfer playlists between music streaming
 - Soundcloud support
 
 ## Credits
-- YouTube Music support is based on [youtube-music-ts-api](https://github.com/nickp10/youtube-music-ts-api).
-- YouTube search is based on [this snippet](https://github.com/CyrilSLi/cyrilsli.github.io/blob/main/youtube_search_en.html)
 - Transcribe uses the [epoxy-tls](https://github.com/MercuryWorkshop/epoxy-tls) library for fetching data without CORS.
+- YouTube Music support is based on [youtube-music-ts-api](https://github.com/nickp10/youtube-music-ts-api).
+- YouTube search is based on [this snippet](https://github.com/CyrilSLi/cyrilsli.github.io/blob/main/youtube_search_en.html).

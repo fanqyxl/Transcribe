@@ -10,20 +10,21 @@
   },
   "dependencies": {
     "@mercuryworkshop/epoxy-tls": "2.1.17-1",
+    "@vitejs/plugin-legacy": "^6.1.1",
     "dreamland": "^0.0.24",
-    "dreamland-router": "https://github.com/mercuryworkshop/dreamland-router",
+    "dreamland-router": "github:MercuryWorkshop/dreamland-router",
     "m3-dreamland": "github:MercuryWorkshop/m3-dreamland",
     "rollup-plugin-typescript2": "^0.36.0",
     "sha1": "^1.1.1",
-    "vite-plugin-dreamland": "^1.2.0",
+    "vite-plugin-dreamland": "^1.2.1",
     "vite-plugin-static-copy": "^2.3.1"
   },
   "devDependencies": {
-    "@eslint/js": "^9.2.0",
+    "@eslint/js": "^9.27.0",
     "@types/sha1": "^1.1.5",
-    "eslint": "^9.2.0",
-    "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "vite": "^5.2.11"
+    "eslint": "^9.27.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
   }
 }
